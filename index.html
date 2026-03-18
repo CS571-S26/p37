@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Tasks</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=Fraunces:ital,wght@0,300;0,500;1,300&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <div id="app">
+
+    <header>
+      <h1>my <em>tasks</em></h1>
+      <span id="stats">0 of 0 done</span>
+    </header>
+
+    <div id="progress-wrap">
+      <div id="progress-label">
+        <span>Progress</span>
+        <span id="pct">0%</span>
+      </div>
+      <div id="progress-bar-bg">
+        <div id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div id="add-section">
+      <div id="add-row-1">
+        <input id="add-title" type="text" placeholder="Add a task…" maxlength="80" />
+        <button id="add-btn">Add</button>
+      </div>
+      <div id="add-row-2">
+        <input id="add-desc" type="text" placeholder="Description (optional)" maxlength="120" />
+        <select id="add-priority">
+          <option value="low">Low</option>
+          <option value="med" selected>Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="filters">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="active">Active</button>
+      <button class="filter-btn" data-filter="done">Done</button>
+      <button class="filter-btn" data-filter="high">High priority</button>
+    </div>
+
+    <div id="task-list"></div>
+
+    <div id="empty">
+      <div id="empty-icon"></div>
+      <p>Nothing here. Add a task above!</p>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
