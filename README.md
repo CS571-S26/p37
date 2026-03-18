@@ -1,16 +1,81 @@
-# React + Vite
+# Personal Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A clean, lightweight productivity app built with React + Vite. No UI libraries — just React, CSS, and localStorage.
 
-Currently, two official plugins are available:
+Built for CS571: Building User Interfaces @ UW–Madison.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Getting Started
+```bash
+git clone https://github.com/CS571-S26/p37.git
+cd p37
+npm install
+npm run dev
+```
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Opens at `http://localhost:5173` with hot reload.
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Project Structure
+```
+p37/
+├── public/
+│   └── favicon.svg
+├── src/
+│   ├── components/
+│   │   ├── AddTaskForm.jsx
+│   │   ├── FilterBar.jsx
+│   │   ├── Header.jsx
+│   │   ├── ProgressBar.jsx
+│   │   ├── TaskItem.jsx
+│   │   └── TaskList.jsx
+│   ├── styles/
+│   │   └── global.css
+│   ├── App.jsx
+│   └── main.jsx
+├── index.html
+├── vite.config.js
+├── package.json
+├── CHANGELOG.md
+└── README.md
+```
+
+---
+
+## Features
+
+- Add tasks with title, description, and priority level
+- Mark tasks complete — strikethrough + fade animation
+- Delete tasks — slides out on removal
+- Filter by All / Active / Done / High Priority
+- Progress bar tracking completion
+- Persists across page refreshes via localStorage
+
+---
+
+## UX Principles Applied (CS571)
+
+| Principle | Implementation |
+|-----------|---------------|
+| Feedback | Red border flash on empty submit, visual state change on complete |
+| Affordance | Hover reveals delete button, circle implies toggleable checkbox |
+| Accessibility | aria-checked, keyboard support (Enter / Space) on checkboxes |
+| Responsiveness | Mobile-first layout, wraps gracefully on small screens |
+
+---
+
+## Tech
+
+- React 19 + Vite 8
+- CSS3 (custom properties, keyframe animations, transitions)
+- localStorage for persistence
+- Google Fonts — DM Sans + Fraunces
+
+---
+
+## Author
+
+Seunghoon Lee — [@twoSquaredHoon](https://github.com/twoSquaredHoon)
+Course repo: [CS571-S26/p37](https://github.com/CS571-S26/p37)
