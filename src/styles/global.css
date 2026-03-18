@@ -66,3 +66,35 @@ header h1 em { font-style: italic; }
 #empty-icon::after { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 14px; height: 2px; background: var(--border); border-radius: 1px; }
 #empty p { font-size: 14px; }
 @media (max-width: 480px) { body { padding: 2rem 1rem 4rem; } header h1 { font-size: 26px; } #add-row-2 { flex-wrap: wrap; } #add-desc { flex: 1 1 100%; } }
+
+/* ── Drag Handle ──────────────────────────────── */
+.drag-handle {
+  flex-shrink: 0;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--border-md);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  touch-action: none;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
+
+.task-item:hover .drag-handle {
+  opacity: 1;
+}
+
+.drag-handle:hover {
+  color: var(--muted);
+}
+
+.task-item.dragging {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
