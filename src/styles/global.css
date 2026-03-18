@@ -98,3 +98,88 @@ header h1 em { font-style: italic; }
   border-color: var(--accent);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
+
+/* ── Due Date Input ───────────────────────────── */
+#add-due {
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+#add-due:focus { border-color: var(--accent); }
+
+/* ── Due Date Badge ───────────────────────────── */
+.due-badge {
+  font-size: 11px;
+  font-weight: 500;
+  padding: 2px 8px;
+  border-radius: 20px;
+}
+
+.due-upcoming {
+  background: #EFF6FF;
+  color: #1D4ED8;
+}
+
+.due-today {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.due-overdue {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+/* ── Overdue task row tint ────────────────────── */
+.task-item.is-overdue:not(.done) {
+  border-color: #FECACA;
+}
+
+/* ── Overdue count badge on filter button ──────── */
+.overdue-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 5px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #EF4444;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+/* ── Drag Handle ──────────────────────────────── */
+.drag-handle {
+  flex-shrink: 0;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--border-md);
+  cursor: grab;
+  opacity: 0;
+  transition: opacity 0.15s, color 0.15s;
+  touch-action: none;
+}
+
+.drag-handle:active { cursor: grabbing; }
+.task-item:hover .drag-handle { opacity: 1; }
+.drag-handle:hover { color: var(--muted); }
+
+.task-item.dragging {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}

@@ -33,19 +33,18 @@ export default function App() {
   }, [tasks])
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 5 },
-    })
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
   )
 
-  function addTask({ title, desc, priority }) {
+  function addTask({ title, desc, priority, dueDate }) {
     const task = {
-      id:      Date.now(),
+      id:       Date.now(),
       title,
       desc,
       priority,
-      done:    false,
-      created: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+      dueDate,
+      done:     false,
+      created:  new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
     }
     setTasks(prev => [task, ...prev])
   }
@@ -61,8 +60,6 @@ export default function App() {
   function handleDragEnd(event) {
     const { active, over } = event
     if (!over || active.id === over.id) return
-
-    // Only reorder within the full task list (drag is disabled when filtered)
     setTasks(prev => {
       const oldIndex = prev.findIndex(t => t.id === active.id)
       const newIndex = prev.findIndex(t => t.id === over.id)
@@ -71,21 +68,23 @@ export default function App() {
   }
 
   const filtered = tasks.filter(t => {
-    if (filter === 'active') return !t.done
-    if (filter === 'done')   return t.done
-    if (filter === 'high')   return t.priority === 'high'
+    if (filter === 'active')  return !t.done
+    if (filter === 'done')    return t.done
+    if (filter === 'high')    return t.priority === 'high'
+    if (filter === 'overdue') return !t.done && isOverdue(t.dueDate)
     return true
   })
 
   const isDraggable = filter === 'all'
   const doneCount   = tasks.filter(t => t.done).length
+  const overdueCount = tasks.filter(t => !t.done && isOverdue(t.dueDate)).length
 
   return (
     <div id="app">
       <Header total={tasks.length} done={doneCount} />
       <ProgressBar total={tasks.length} done={doneCount} />
       <AddTaskForm onAdd={addTask} />
-      <FilterBar active={filter} onChange={setFilter} />
+      <FilterBar active={filter} onChange={setFilter} overdueCount={overdueCount} />
 
       {isDraggable ? (
         <DndContext
@@ -94,26 +93,31 @@ export default function App() {
           modifiers={[restrictToVerticalAxis]}
           onDragEnd={handleDragEnd}
         >
-          <SortableContext
-            items={filtered.map(t => t.id)}
-            strategy={verticalListSortingStrategy}
-          >
-            <TaskList
-              tasks={filtered}
-              onToggle={toggleDone}
-              onRemove={removeTask}
-              draggable
-            />
+          <SortableContext items={filtered.map(t => t.id)} strategy={verticalListSortingStrategy}>
+            <TaskList tasks={filtered} onToggle={toggleDone} onRemove={removeTask} draggable />
           </SortableContext>
         </DndContext>
       ) : (
-        <TaskList
-          tasks={filtered}
-          onToggle={toggleDone}
-          onRemove={removeTask}
-          draggable={false}
-        />
+        <TaskList tasks={filtered} onToggle={toggleDone} onRemove={removeTask} draggable={false} />
       )}
     </div>
+  )
+}
+
+export function isOverdue(dueDate) {
+  if (!dueDate) return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return new Date(dueDate + 'T00:00:00') < today
+}
+
+export function isDueToday(dueDate) {
+  if (!dueDate) return false
+  const today = new Date()
+  const due   = new Date(dueDate + 'T00:00:00')
+  return (
+    due.getFullYear() === today.getFullYear() &&
+    due.getMonth()    === today.getMonth() &&
+    due.getDate()     === today.getDate()
   )
 }

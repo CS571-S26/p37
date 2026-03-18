@@ -4,6 +4,7 @@ export default function AddTaskForm({ onAdd }) {
   const [title, setTitle]       = useState('')
   const [desc, setDesc]         = useState('')
   const [priority, setPriority] = useState('med')
+  const [dueDate, setDueDate]   = useState('')
   const [shake, setShake]       = useState(false)
   const titleRef = useRef(null)
 
@@ -14,10 +15,11 @@ export default function AddTaskForm({ onAdd }) {
       titleRef.current?.focus()
       return
     }
-    onAdd({ title: title.trim(), desc: desc.trim(), priority })
+    onAdd({ title: title.trim(), desc: desc.trim(), priority, dueDate })
     setTitle('')
     setDesc('')
     setPriority('med')
+    setDueDate('')
   }
 
   return (
@@ -51,6 +53,13 @@ export default function AddTaskForm({ onAdd }) {
           <option value="med">Medium</option>
           <option value="high">High</option>
         </select>
+        <input
+          id="add-due"
+          type="date"
+          value={dueDate}
+          onChange={e => setDueDate(e.target.value)}
+          title="Due date (optional)"
+        />
       </div>
     </div>
   )

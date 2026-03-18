@@ -4,6 +4,30 @@ import { CSS } from '@dnd-kit/utilities'
 
 const PRIORITY_LABEL = { high: 'High', med: 'Medium', low: 'Low' }
 
+function isOverdue(dueDate) {
+  if (!dueDate) return false
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  return new Date(dueDate + 'T00:00:00') < today
+}
+
+function isDueToday(dueDate) {
+  if (!dueDate) return false
+  const today = new Date()
+  const due   = new Date(dueDate + 'T00:00:00')
+  return (
+    due.getFullYear() === today.getFullYear() &&
+    due.getMonth()    === today.getMonth() &&
+    due.getDate()     === today.getDate()
+  )
+}
+
+function formatDue(dueDate) {
+  if (!dueDate) return null
+  const due = new Date(dueDate + 'T00:00:00')
+  return due.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+}
+
 export default function TaskItem({ task, onToggle, onRemove, draggable = false }) {
   const [removing, setRemoving] = useState(false)
 
@@ -19,8 +43,8 @@ export default function TaskItem({ task, onToggle, onRemove, draggable = false }
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    opacity:   isDragging ? 0.4 : 1,
-    zIndex:    isDragging ? 999 : undefined,
+    opacity: isDragging ? 0.4 : 1,
+    zIndex:  isDragging ? 999 : undefined,
   }
 
   function handleRemove() {
@@ -28,19 +52,24 @@ export default function TaskItem({ task, onToggle, onRemove, draggable = false }
     setTimeout(() => onRemove(task.id), 300)
   }
 
+  const overdue  = !task.done && isOverdue(task.dueDate)
+  const dueToday = !task.done && isDueToday(task.dueDate)
+  const dueLabel = formatDue(task.dueDate)
+
   return (
     <div
       ref={setNodeRef}
       style={style}
-      className={`task-item${task.done ? ' done' : ''}${removing ? ' removing' : ''}${isDragging ? ' dragging' : ''}`}
+      className={[
+        'task-item',
+        task.done  ? 'done'     : '',
+        removing   ? 'removing' : '',
+        isDragging ? 'dragging' : '',
+        overdue    ? 'is-overdue' : '',
+      ].filter(Boolean).join(' ')}
     >
       {draggable && (
-        <div
-          className="drag-handle"
-          {...attributes}
-          {...listeners}
-          title="Drag to reorder"
-        >
+        <div className="drag-handle" {...attributes} {...listeners} title="Drag to reorder">
           <svg width="12" height="16" viewBox="0 0 12 16" fill="none">
             <circle cx="4" cy="3"  r="1.5" fill="currentColor" />
             <circle cx="4" cy="8"  r="1.5" fill="currentColor" />
@@ -68,6 +97,13 @@ export default function TaskItem({ task, onToggle, onRemove, draggable = false }
           <span className={`priority-badge p-${task.priority}`}>
             {PRIORITY_LABEL[task.priority]}
           </span>
+
+          {dueLabel && (
+            <span className={`due-badge ${overdue ? 'due-overdue' : dueToday ? 'due-today' : 'due-upcoming'}`}>
+              {overdue ? '⚠ ' : dueToday ? '◎ ' : ''}{dueLabel}
+            </span>
+          )}
+
           <span className="task-date">{task.created}</span>
         </div>
       </div>
