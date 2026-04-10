@@ -1,11 +1,10 @@
+
 const FILTERS = [
   { key: 'all',     label: 'All' },
   { key: 'active',  label: 'Active' },
-  { key: 'done',    label: 'Done' },
   { key: 'high',    label: 'High priority' },
   { key: 'overdue', label: 'Overdue' },
 ]
-
 export default function FilterBar({ active, onChange, overdueCount }) {
   return (
     <div id="filters">

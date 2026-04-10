@@ -1,8 +1,20 @@
+import { Navbar, Nav, Container } from 'react-bootstrap'
+import { NavLink } from 'react-router-dom'
+
 export default function Header({ total, done }) {
   return (
-    <header>
-      <h1>my <em>tasks</em></h1>
-      <span id="stats">{done} of {total} done</span>
-    </header>
+    <Navbar bg="dark" variant="dark" expand="sm" className="mb-3">
+      <Container>
+        <Navbar.Brand href="#">my <em>tasks</em></Navbar.Brand>
+        <Navbar.Toggle aria-controls="main-nav" />
+        <Navbar.Collapse id="main-nav">
+          <Nav className="me-auto">
+            <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+            <Nav.Link as={NavLink} to="/completed">Completed</Nav.Link>
+          </Nav>
+          
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   )
 }

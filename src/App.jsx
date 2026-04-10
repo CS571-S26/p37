@@ -1,15 +1,11 @@
 import { useState, useEffect } from 'react'
+import { Routes, Route } from 'react-router-dom'
 import {
-  DndContext,
-  closestCenter,
-  PointerSensor,
-  useSensor,
-  useSensors,
+  DndContext, closestCenter, PointerSensor,
+  useSensor, useSensors,
 } from '@dnd-kit/core'
 import {
-  SortableContext,
-  verticalListSortingStrategy,
-  arrayMove,
+  SortableContext, verticalListSortingStrategy, arrayMove,
 } from '@dnd-kit/sortable'
 import { restrictToVerticalAxis } from '@dnd-kit/modifiers'
 
@@ -18,6 +14,7 @@ import ProgressBar from './components/ProgressBar'
 import AddTaskForm from './components/AddTaskForm'
 import FilterBar from './components/FilterBar'
 import TaskList from './components/TaskList'
+import CompletedPage from './components/CompletedPage'
 
 const STORAGE_KEY = 'cs571_tasks'
 
@@ -37,16 +34,11 @@ export default function App() {
   )
 
   function addTask({ title, desc, priority, dueDate }) {
-    const task = {
-      id:       Date.now(),
-      title,
-      desc,
-      priority,
-      dueDate,
-      done:     false,
-      created:  new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
-    }
-    setTasks(prev => [task, ...prev])
+    setTasks(prev => [{
+      id: Date.now(), title, desc, priority, dueDate,
+      done: false,
+      created: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    }, ...prev])
   }
 
   function toggleDone(id) {
@@ -57,8 +49,7 @@ export default function App() {
     setTasks(prev => prev.filter(t => t.id !== id))
   }
 
-  function handleDragEnd(event) {
-    const { active, over } = event
+  function handleDragEnd({ active, over }) {
     if (!over || active.id === over.id) return
     setTasks(prev => {
       const oldIndex = prev.findIndex(t => t.id === active.id)
@@ -75,31 +66,42 @@ export default function App() {
     return true
   })
 
-  const isDraggable = filter === 'all'
-  const doneCount   = tasks.filter(t => t.done).length
+  const isDraggable  = filter === 'all'
+  const doneCount    = tasks.filter(t => t.done).length
   const overdueCount = tasks.filter(t => !t.done && isOverdue(t.dueDate)).length
+  const completedTasks = tasks.filter(t => t.done)
 
   return (
     <div id="app">
       <Header total={tasks.length} done={doneCount} />
-      <ProgressBar total={tasks.length} done={doneCount} />
-      <AddTaskForm onAdd={addTask} />
-      <FilterBar active={filter} onChange={setFilter} overdueCount={overdueCount} />
 
-      {isDraggable ? (
-        <DndContext
-          sensors={sensors}
-          collisionDetection={closestCenter}
-          modifiers={[restrictToVerticalAxis]}
-          onDragEnd={handleDragEnd}
-        >
-          <SortableContext items={filtered.map(t => t.id)} strategy={verticalListSortingStrategy}>
-            <TaskList tasks={filtered} onToggle={toggleDone} onRemove={removeTask} draggable />
-          </SortableContext>
-        </DndContext>
-      ) : (
-        <TaskList tasks={filtered} onToggle={toggleDone} onRemove={removeTask} draggable={false} />
-      )}
+      <Routes>
+        <Route path="/" element={
+          <>
+            <ProgressBar total={tasks.length} done={doneCount} />
+            <AddTaskForm onAdd={addTask} />
+            <FilterBar active={filter} onChange={setFilter} overdueCount={overdueCount} />
+            {isDraggable ? (
+              <DndContext
+                sensors={sensors}
+                collisionDetection={closestCenter}
+                modifiers={[restrictToVerticalAxis]}
+                onDragEnd={handleDragEnd}
+              >
+                <SortableContext items={filtered.map(t => t.id)} strategy={verticalListSortingStrategy}>
+                  <TaskList tasks={filtered} onToggle={toggleDone} onRemove={removeTask} draggable />
+                </SortableContext>
+              </DndContext>
+            ) : (
+              <TaskList tasks={filtered} onToggle={toggleDone} onRemove={removeTask} draggable={false} />
+            )}
+          </>
+        } />
+
+        <Route path="/completed" element={
+          <CompletedPage tasks={completedTasks} onToggle={toggleDone} onRemove={removeTask} />
+        } />
+      </Routes>
     </div>
   )
 }
@@ -117,7 +119,7 @@ export function isDueToday(dueDate) {
   const due   = new Date(dueDate + 'T00:00:00')
   return (
     due.getFullYear() === today.getFullYear() &&
-    due.getMonth()    === today.getMonth() &&
+    due.getMonth()    === today.getMonth()    &&
     due.getDate()     === today.getDate()
   )
 }
