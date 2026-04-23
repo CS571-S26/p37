@@ -7,7 +7,7 @@ import './styles/global.css'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <BrowserRouter basename="/p37">
+    <BrowserRouter basename="/">
       <App />
     </BrowserRouter>
   </StrictMode>
