@@ -34,7 +34,7 @@ export default function AddTaskForm({ onAdd }) {
           value={title}
           onChange={e => setTitle(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleSubmit()}
-          style={shake ? { borderColor: '#EF4444' } : {}}
+          className={shake ? 'add-title--error' : undefined}
         />
         <button id="add-btn" onClick={handleSubmit}>Add</button>
       </div>
